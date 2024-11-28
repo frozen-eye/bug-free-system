@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.13...3.27)
 
-set(PICO_PLATFORM rp2040)
 set(PICO_BOARD pico)
+set(PICO_PLATFORM rp2040)
 set(PICO_COMPILER pico_arm_cortex_m0plus_gcc)
 set(PICOTOOL_FETCH_FROM_GIT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/picotool)
 
@@ -25,7 +25,7 @@ add_executable(${CMAKE_PROJECT_NAME} src/main.c)
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ./src/)
 
 # add stdlib
-target_link_libraries(${CMAKE_PROJECT_NAME} pico_stdlib pico_async_context_freertos FreeRTOS-Kernel-Heap4)
+target_link_libraries(${CMAKE_PROJECT_NAME} pico_stdlib FreeRTOS-Kernel-Heap4)
 
 # include custom linker script
 # pico_set_linker_script(${CMAKE_PROJECT_NAME} ${CMAKE_SOURCE_DIR}/memmap_custom.ld)
