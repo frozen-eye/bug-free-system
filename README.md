@@ -13,3 +13,11 @@ To update the submodules to the latest commit, use:
 ```sh
 git submodule update --remote --merge
 ```
+
+## Build OpenOCD
+
+```sh
+./bootstrap
+./configure
+make -j6
+```
