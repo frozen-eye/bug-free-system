@@ -13,19 +13,31 @@ include(FreeRTOS-Kernel/portable/ThirdParty/GCC/RP2040/FreeRTOS_Kernel_import.cm
 # set the project name
 project(bfs)
 
-set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD 17)
 
 # initialize the Raspberry Pi Pico SDK
 pico_sdk_init()
 
+# add preprocessor definitions
+add_compile_definitions(${CMAKE_PROJECT_NAME} LOG_LEVEL=LOG_LEVEL_VERBOSE)
+
 # add the project source files
-add_executable(${CMAKE_PROJECT_NAME} src/main.c)
+add_executable(${CMAKE_PROJECT_NAME}
+    src/main.c
+    src/drivers/i2c/common.c
+    src/drivers/spi/nrf24.c
+    src/drivers/i2c/bmp280.c
+)
 
 # add the project include directory
-target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ./src/)
+target_include_directories(${CMAKE_PROJECT_NAME}
+    PRIVATE
+    ./src
+    ./src/include
+)
 
 # add stdlib
-target_link_libraries(${CMAKE_PROJECT_NAME} pico_stdlib FreeRTOS-Kernel-Heap4)
+target_link_libraries(${CMAKE_PROJECT_NAME} hardware_i2c hardware_spi pico_stdlib FreeRTOS-Kernel-Heap4)
 
 # include custom linker script
 # pico_set_linker_script(${CMAKE_PROJECT_NAME} ${CMAKE_SOURCE_DIR}/memmap_custom.ld)

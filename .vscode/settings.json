@@ -1,10 +1,13 @@
 {
   "files.associations": {
     "*.bin": "code-text-binary",
-    "freertos_sdk_config.h": "c",
-    "freertos.h": "c"
+    "*.c": "c",
+    "*.h": "c"
   },
   "git.ignoreSubmodules": true,
   "cortex-debug.openocdPath": "${workspaceFolder}/openocd/src/openocd",
   "cortex-debug.variableUseNaturalFormat": false,
+  "cmake.clearOutputBeforeBuild": true,
+  // "cmake.parallelJobs": 6,
+  "cmake.buildBeforeRun": true,
 }
