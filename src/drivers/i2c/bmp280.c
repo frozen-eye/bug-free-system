@@ -1,6 +1,8 @@
 /**
  * Copyright (c) 2021 Raspberry Pi (Trading) Ltd.
  *
+ * Modified by FrozenEye
+ *
  * SPDX-License-Identifier: BSD-3-Clause
  **/
 
@@ -19,11 +21,11 @@ static int bmp280_read_raw(int32_t* temp, int32_t* pressure) {
 
   uint8_t buf[6] = {0};
   uint8_t reg = REG_PRESSURE_MSB;
-  if (i2c_write_blocking(i2c_default, ADDR, &reg, 1, true) != PICO_ERROR_NONE) {  // true to keep master control of bus
+  if (i2c_write_blocking(i2c_default, ADDR, &reg, 1, true) == PICO_ERROR_GENERIC) {  // true to keep master control of bus
     return PICO_ERROR_GENERIC;
   }
 
-  if (i2c_read_blocking(i2c_default, ADDR, buf, 6, false) != PICO_ERROR_NONE) {  // false - finished with bus
+  if (i2c_read_blocking(i2c_default, ADDR, buf, 6, false) == PICO_ERROR_GENERIC) {  // false - finished with bus
     return PICO_ERROR_GENERIC;
   }
 
@@ -91,13 +93,13 @@ static int bmp280_get_calib_params(struct bmp280_calib_param* params) {
   uint8_t buf[NUM_CALIB_PARAMS] = {0};
   uint8_t reg = REG_DIG_T1_LSB;
   // true to keep master control of bus
-  if (i2c_write_blocking(i2c_default, ADDR, &reg, 1, true) != PICO_ERROR_NONE) {
+  if (i2c_write_blocking(i2c_default, ADDR, &reg, 1, true) == PICO_ERROR_GENERIC) {
     return PICO_ERROR_GENERIC;
   }
 
   // read in one go as register addresses auto-increment
   // false, we're done reading
-  if (i2c_read_blocking(i2c_default, ADDR, buf, NUM_CALIB_PARAMS, false) != PICO_ERROR_NONE) {
+  if (i2c_read_blocking(i2c_default, ADDR, buf, NUM_CALIB_PARAMS, false) == PICO_ERROR_GENERIC) {
     return PICO_ERROR_GENERIC;
   }
 
@@ -121,7 +123,7 @@ static int bmp280_get_calib_params(struct bmp280_calib_param* params) {
 
 int bmp280_init() {
   // use the "handheld device dynamic" optimal setting (see datasheet)
-  uint8_t buf[2];
+  uint8_t buf[2] = {0};
 
   // 500ms sampling time, x16 filter
   const uint8_t reg_config_val = ((0x04 << 5) | (0x05 << 2)) & 0xFC;
@@ -129,7 +131,7 @@ int bmp280_init() {
   // send register number followed by its corresponding value
   buf[0] = REG_CONFIG;
   buf[1] = reg_config_val;
-  if (i2c_write_blocking(i2c_default, ADDR, buf, 2, false) != PICO_ERROR_NONE) {
+  if (i2c_write_blocking(i2c_default, ADDR, buf, 2, false) == PICO_ERROR_GENERIC) {
     return PICO_ERROR_GENERIC;
   }
 
@@ -137,7 +139,7 @@ int bmp280_init() {
   const uint8_t reg_ctrl_meas_val = (0x01 << 5) | (0x03 << 2) | (0x03);
   buf[0] = REG_CTRL_MEAS;
   buf[1] = reg_ctrl_meas_val;
-  if (i2c_write_blocking(i2c_default, ADDR, buf, 2, false) != PICO_ERROR_NONE) {
+  if (i2c_write_blocking(i2c_default, ADDR, buf, 2, false) == PICO_ERROR_GENERIC) {
     return PICO_ERROR_GENERIC;
   }
 
@@ -147,18 +149,26 @@ int bmp280_init() {
 int bmp280_reset() {
   // reset the device with the power-on-reset procedure
   uint8_t buf[2] = {REG_RESET, 0xB6};
-  return i2c_write_blocking(i2c_default, ADDR, buf, 2, false);
+  if (i2c_write_blocking(i2c_default, ADDR, buf, 2, false) == PICO_ERROR_GENERIC) {
+    return PICO_ERROR_GENERIC;
+  }
+
+  return PICO_ERROR_NONE;
 }
 
 int bmp280_read_data(int32_t* temp, int32_t* pressure) {
   // read the raw temperature and pressure values
   int32_t raw_temp = 0;
   int32_t raw_pressure = 0;
-  bmp280_read_raw(&raw_temp, &raw_pressure);
+  if (bmp280_read_raw(&raw_temp, &raw_pressure) != PICO_ERROR_NONE) {
+    return PICO_ERROR_GENERIC;
+  }
 
   // read the calibration parameters
   struct bmp280_calib_param params;
-  bmp280_get_calib_params(&params);
+  if (bmp280_get_calib_params(&params) != PICO_ERROR_NONE) {
+    return PICO_ERROR_GENERIC;
+  }
 
   // convert the raw values to compensated values
   int32_t t = bmp280_convert_temp(raw_temp, &params);
