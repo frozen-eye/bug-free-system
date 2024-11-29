@@ -1,5 +1,11 @@
-// This project uses the CMake build system.
+/**
+ * SPDX-FileCopyrightText: 2024 FrozenEye
+ * SPDX-License-Identifier: MIT License
+ * @file main.c
+ */
+
 #include <pico/stdlib.h>
+#include <stdint.h>
 #include <stdio.h>
 
 // add the FreeRTOS headers
@@ -9,7 +15,8 @@
 #include <task.h>
 
 #include "common.h"
-#include "drivers/nrf24_driver.h"
+// #include "drivers/nrf24_driver.h"
+#include "drivers/bmp280_driver.h"
 
 /**
  * @brief I2C task function that runs indefinitely.
@@ -28,13 +35,17 @@ void i2c_task(void *pvParameters) {
   gpio_pull_up(PICO_DEFAULT_I2C_SDA_PIN);
   gpio_pull_up(PICO_DEFAULT_I2C_SCL_PIN);
 
+  bmp280_init();
+
+  int32_t temp, pressure;
+  bmp280_read_data(&temp, &pressure);
+
   // Forever loop
   while (true) {
     vTaskDelay(pdMS_TO_TICKS(1000));
 
     // Perform I2C bus scan
-    LOGI("i2c_task", "Scanning I2C bus...");
-    i2c_scan();
+    LOGI("i2c_task", "Scanning i2c bus for bmp280... %s", i2c_probe(0x76) == PICO_ERROR_NONE ? "OK" : "LOST");
   }
 }
 

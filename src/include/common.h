@@ -1,11 +1,20 @@
+/**
+ * SPDX-FileCopyrightText: 2024 FrozenEye
+ * SPDX-License-Identifier: MIT License
+ *
+ * @file common.h
+ */
+
 #pragma once
 
+#include <stdint.h>
+
 #define LOG_LEVEL_VERBOSE 5
-#define LOG_LEVEL_DEBUG 4
-#define LOG_LEVEL_INFO 3
+#define LOG_LEVEL_DEBUG   4
+#define LOG_LEVEL_INFO    3
 #define LOG_LEVEL_WARNING 2
-#define LOG_LEVEL_ERROR 1
-#define LOG_LEVEL_NONE 0
+#define LOG_LEVEL_ERROR   1
+#define LOG_LEVEL_NONE    0
 
 #ifndef LOGV
 #if LOG_LEVEL >= LOG_LEVEL_VERBOSE
@@ -50,6 +59,9 @@
 typedef enum pico_error_codes pico_error_t;
 
 /**
- * @brief Scan I2C bus for devices.
+ * @brief Probe i2c bus for a device.
+ *
+ * @param addr The address of the device to probe.
+ * @return pico_error_t The error code. PICO_ERROR_NONE if successful.
  */
-pico_error_t i2c_scan(void);
+pico_error_t i2c_probe(uint8_t addr);
