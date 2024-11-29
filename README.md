@@ -43,4 +43,13 @@ Only compile-time logging is supported for now. To change the logging level, cha
 add_compile_definitions(${CMAKE_PROJECT_NAME} LOG_LEVEL=LOG_LEVEL_xxx)
 ```
 
-`LOG_LEVEL` can be one of the defined values in [./src/include/common.h](./src/include/common.h#L3-L8) header file.
+`LOG_LEVEL` can be one of the defined values in [./src/include/common.h#L3-L8](./src/include/common.h#L3-L8) header file:
+
+```c
+#define LOG_LEVEL_VERBOSE 5
+#define LOG_LEVEL_DEBUG   4
+#define LOG_LEVEL_INFO    3
+#define LOG_LEVEL_WARNING 2
+#define LOG_LEVEL_ERROR   1
+#define LOG_LEVEL_NONE    0
+```
