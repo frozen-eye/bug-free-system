@@ -1,2 +1,5 @@
+# https://clang.llvm.org/docs/ClangFormatStyleOptions.html
+
 BasedOnStyle: Google
 ColumnLimit: 132
+AlignConsecutiveMacros: AcrossEmptyLinesAndComments
