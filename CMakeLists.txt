@@ -25,7 +25,6 @@ add_compile_definitions(${CMAKE_PROJECT_NAME} LOG_LEVEL=LOG_LEVEL_VERBOSE)
 add_executable(${CMAKE_PROJECT_NAME}
     src/main.c
     src/drivers/i2c/common.c
-    src/drivers/spi/nrf24.c
     src/drivers/i2c/bmp280.c
 )
 

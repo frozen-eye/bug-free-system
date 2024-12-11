@@ -121,7 +121,7 @@ static int bmp280_get_calib_params(struct bmp280_calib_param* params) {
   return PICO_ERROR_NONE;
 }
 
-int bmp280_init() {
+int bmp280_init(void) {
   // use the "handheld device dynamic" optimal setting (see datasheet)
   uint8_t buf[2] = {0};
 
@@ -146,7 +146,7 @@ int bmp280_init() {
   return PICO_ERROR_NONE;
 }
 
-int bmp280_reset() {
+int bmp280_reset(void) {
   // reset the device with the power-on-reset procedure
   uint8_t buf[2] = {REG_RESET, 0xB6};
   if (i2c_write_blocking(i2c_default, ADDR, buf, 2, false) == PICO_ERROR_GENERIC) {

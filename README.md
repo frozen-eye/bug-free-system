@@ -1,5 +1,11 @@
 # bug-free-system
 
+## Requirements
+
+```sh
+sudo apt install gcc g++ cmake cmake-format libtool pkgconf gcc-arm-none-eabi
+```
+
 ## Initializing and Updating Git Submodules (required)
 
 To initialize the submodules in the repository, run the following command:
@@ -25,7 +31,7 @@ $ ./configure
 Build:
 
 ```sh
-$ make
+$ make -j4
 ```
 
 Optionally it is possible to install openocd in the system (required root privileges). Please note that the current version of the openocd is a fork specially created for raspberry pi pico:
@@ -43,13 +49,4 @@ Only compile-time logging is supported for now. To change the logging level, cha
 add_compile_definitions(${CMAKE_PROJECT_NAME} LOG_LEVEL=LOG_LEVEL_xxx)
 ```
 
-`LOG_LEVEL` can be one of the defined values in [./src/include/common.h#L3-L8](./src/include/common.h#L3-L8) header file:
-
-```c
-#define LOG_LEVEL_VERBOSE 5
-#define LOG_LEVEL_DEBUG   4
-#define LOG_LEVEL_INFO    3
-#define LOG_LEVEL_WARNING 2
-#define LOG_LEVEL_ERROR   1
-#define LOG_LEVEL_NONE    0
-```
+`LOG_LEVEL` can be one of the defined values in [./src/include/common.h](./src/include/common.h#L3-L8) header file.
